@@ -46,7 +46,7 @@ Widget::Widget(QWidget *parent)
         // open and configure the serialport
         arduino->setPortName(arduino_port_name);
         arduino->open(QSerialPort::ReadWrite);
-        arduino->setBaudRate(QSerialPort::Baud57600);
+        arduino->setBaudRate(QSerialPort::Baud115200);
         arduino->setDataBits(QSerialPort::Data8);
         arduino->setParity(QSerialPort::NoParity);
         arduino->setStopBits(QSerialPort::OneStop);
@@ -67,21 +67,26 @@ Widget::~Widget()
 
 void Widget::on_Update_PushButton_clicked()
 {
-    if(arduino->isWritable()){
-        int maximum = ui->Maximum_Humity_spinBox->value();
-        int minimum = ui->Minimum_humity_spinBox->value();
-        char max_humity[10];
-        char min_humity[10];
-        std::sprintf(max_humity, "%d", maximum);
-        std::sprintf(min_humity, "%d", minimum);
-        arduino->write("2");
-        arduino->waitForBytesWritten(100);
+    int maximum = ui->Maximum_Humity_spinBox->value();
+    int minimum = ui->Minimum_humity_spinBox->value();
+    char max_humity[10];
+    char min_humity[10];
+    std::sprintf(max_humity, "%d\n", maximum);
+    std::sprintf(min_humity, "%d\n", minimum);
+    if(arduino->isWritable()){    
+        arduino->write("2\n");
         arduino->write(max_humity);
-        arduino->waitForBytesWritten(100);
         arduino->write(min_humity);
+
     }else{
         qDebug() << "Couldn't write to serial!";
     }
+
+
+
+
+
+
 
 
     //arduino->waitForReadyRead();
@@ -98,7 +103,7 @@ void Widget::on_Update_PushButton_clicked()
 void Widget::on_State_PushButton_clicked()
 {
     if(arduino->isWritable()){
-        arduino->write("3");
+        arduino->write("3\n");
     }else{
         qDebug() << "Couldn't write to serial!";
     }
