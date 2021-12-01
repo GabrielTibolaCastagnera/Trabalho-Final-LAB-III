@@ -35,55 +35,63 @@ bool LED = true;
 unsigned long temporizer = millis();
 
 //configuração de solo seco e molhado
-int dry_ground = 1023, wet_ground = 390;
+int dry_ground = 1023, wet_ground = 350;
 
+//Definição das constantes
+const char Initialize = '1';
+const char Update = '2';
+const char STOP = '3';
+const char WAIT = '0';
 
 void loop() {
   //Escreve no dysplay LCD a umidade e a Temperatura do meio
   WriteTemperatureAndHumityFromEnvairoment();
 
-  //estado 1 se as informações de máxima e mínima umidade do solo estiverem corretas
 
-  if (Serial.available() > -1)
+
+
+  if (Serial.available() > 0)
   {
-
-
+    //Guarda o estado anterior
+    int aux = estado;
     
-
-    //lê do computador qual será a tarefa a ser feita
-    if (estado == '1')
+     //lê do computador qual será a tarefa a ser feita se diferente de 1
+    if(estado != Initialize)
+      estado = Serial.read();
+      
+    //estado 1 se as informações de máxima e mínima umidade do solo estiverem corretas
+    if (estado == Initialize)
     {
-      //atualiza a umidade do solo a cada 1 segundos. Pisca um LED para saber que está funcionando
-      if ((millis() - temporizer) > 1000)
+      while (estado != Update && estado != STOP && estado != WAIT)
       {
-        int humity;
-        digitalWrite(13, HIGH);
+        //atualiza a umidade do solo a cada 1 segundos. Pisca um LED para saber que está funcionando
+        if ((millis() - temporizer) > 1000)
+        {
+          int humity;
+          digitalWrite(13, HIGH);
 
-        //captura qual é a umidade atual do solo em %
-        humity = constrain(analogRead(humity_sensor), wet_ground, dry_ground);
-        humity = map (humity, wet_ground, dry_ground, 100, 0);
-        //Envia a umidade atual do solo e se precisa de mais água ou não para o computador
-        WriteHumityFromGround(humity, Maximum_Ground_Humity, Minimum_Ground_Humity);
+          //captura qual é a umidade atual do solo em %
+          humity = constrain(analogRead(humity_sensor), wet_ground, dry_ground);
+          humity = map (humity, wet_ground, dry_ground, 100, 0);
+          //Envia a umidade atual do solo e se precisa de mais água ou não para o computador
+          WriteHumityFromGround(humity, Maximum_Ground_Humity, Minimum_Ground_Humity);
+          WriteTemperatureAndHumityFromEnvairoment();
+          digitalWrite(13, LED);
+          LED = !LED;
+          temporizer = millis();
 
-        digitalWrite(13, LED);
-        LED = !LED;
-        temporizer = millis();
-
+        }
+        estado = Serial.read();
       }
-
-
     }
 
-    int aux = estado;
-    estado = Serial.read();
-
     //estado 3 para quando o usuário quiser parar o circuito e depois voltar para o estado anterior
-    if (estado == '3')
+    if (estado == STOP)
     {
-      estado = aux;
-      while (estado != '3')
+      estado = '4';
+      while (estado != STOP && estado != WAIT)
       {
-        Serial.println("PARADO!");
+        Serial.println("STOP!");
         digitalWrite(13, HIGH);
         delay(250);
         digitalWrite(13, LOW);
@@ -91,35 +99,23 @@ void loop() {
 
         estado = Serial.read();
       }
-      estado = aux;
+      if(estado == STOP)
+      {
+        estado = aux;
+      }
     }
     //estado 2 para atualizar os dados de máxima e de mínima. Caso não estiverem corretos, o programa exibirá uma mensagem e não exibirá a umidade do solo
-    if ((estado == '2'))
+    if ((estado == Update))
     {
       Maximum_Ground_Humity = Serial.parseInt();
       Minimum_Ground_Humity = Serial.parseInt();
-
-
-      if (Maximum_Ground_Humity >= 0 && Maximum_Ground_Humity <= 100 && Minimum_Ground_Humity <= Maximum_Ground_Humity && Minimum_Ground_Humity >= 0)
-      {
-        estado = '1';
-      }
-      else
-      {
-        estado = '0';
-      }
-    }
-    if (estado == '0')
-    {
-      Serial.println("Error on reading maximum and minimum ground humity");
+      estado = Initialize;
     }
 
-
-
-
-
+    if(estado == WAIT)
+      Serial.println("");
   }
-  
+
 
 }
 //função que lê e mostra no LCD as informações de temperatura e umidade do meio

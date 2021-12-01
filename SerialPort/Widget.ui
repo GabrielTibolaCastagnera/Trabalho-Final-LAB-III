@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>759</width>
-    <height>416</height>
+    <width>689</width>
+    <height>226</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,19 +26,23 @@
          <item>
           <widget class="QLabel" name="Maximum_Humitylabel">
            <property name="text">
-            <string>Maximum Ground Humity: </string>
+            <string>Maximum Ground Humity: (%)</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="Maximum_Humity_spinBox"/>
+          <widget class="QSpinBox" name="Maximum_Humity_spinBox">
+           <property name="maximum">
+            <number>100</number>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
        <item>
         <widget class="QLabel" name="Minimum_label">
          <property name="text">
-          <string>Minimum Groung Humity:</string>
+          <string>Minimum Ground Humity (%):</string>
          </property>
         </widget>
        </item>
@@ -56,7 +60,7 @@
    <item>
     <widget class="QPushButton" name="Update_PushButton">
      <property name="text">
-      <string>UPDATE</string>
+      <string>UPDATE/INITIALIZE</string>
      </property>
     </widget>
    </item>
@@ -68,14 +72,14 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="estado_label">
+    <widget class="QLabel" name="humity_label">
      <property name="text">
       <string/>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="humity_label">
+    <widget class="QLabel" name="estado_label">
      <property name="text">
       <string/>
      </property>

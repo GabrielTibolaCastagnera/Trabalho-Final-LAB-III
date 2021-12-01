@@ -24,6 +24,16 @@ private slots:
 
     void readSerial();
 
+    void readSettings();
+
+    void writeSettings();
+
+    void Update();
+
+    void closeEvent(QCloseEvent *event);
+
+    void on_Maximum_Humity_spinBox_valueChanged(int arg1);
+
 private:
     Ui::Widget *ui;
     QSerialPort *arduino;
