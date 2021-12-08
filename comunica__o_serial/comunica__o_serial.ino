@@ -15,6 +15,16 @@ DHT_Unified dht(DHT11_sensor, DHTTYPE);
 void WriteTemperatureAndHumityFromEnvairoment();
 void WriteHumityFromGround(int humity, int _Maximum_Ground_Humity, int _Minimum_Ground_Humity);
 
+byte grau[8]{
+  B00111,
+  B00101,
+  B00111,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+};
 //seta as entradas e saídas e inicializa o LCD e o sensor de temperatura e umidade
 void setup() {
   Serial.begin(115200);
@@ -23,6 +33,7 @@ void setup() {
   digitalWrite(13, LOW);
   dht.begin();
   lcd.begin(16, 2);
+  lcd.createChar(5, grau);
   lcd.setCursor(0, 0);
 
 }
@@ -96,7 +107,6 @@ void loop() {
         delay(250);
         digitalWrite(13, LOW);
         delay(250);
-
         estado = Serial.read();
       }
       if(estado == STOP)
@@ -109,6 +119,8 @@ void loop() {
     {
       Maximum_Ground_Humity = Serial.parseInt();
       Minimum_Ground_Humity = Serial.parseInt();
+      Serial.println("DATA UPDATED SUCCESSFULLY!");
+      delay(1000);
       estado = Initialize;
     }
 
@@ -132,8 +144,10 @@ void WriteTemperatureAndHumityFromEnvairoment()
   }
   else {
 
-    lcd.print("Temperature C:");
-    lcd.println(int(eventT.temperature));
+    lcd.print("Temperature:");
+    lcd.print(int(eventT.temperature));
+    lcd.write(5);
+    lcd.print("C");
   }
 
 
@@ -142,8 +156,9 @@ void WriteTemperatureAndHumityFromEnvairoment()
   }
   else {
     lcd.setCursor(0, 1);
-    lcd.print("Humity %:");
+    lcd.print("Humity: ");
     lcd.print(int(eventH.relative_humidity));
+    lcd.print("%");
   }
 }
 

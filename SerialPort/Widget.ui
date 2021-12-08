@@ -24,6 +24,20 @@
        <item>
         <layout class="QHBoxLayout" name="Maximum_Humity_horizontalLayout">
          <item>
+          <widget class="QLabel" name="Minimum_label">
+           <property name="text">
+            <string>Minimum Ground Humity (%):</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="Minimum_humity_spinBox">
+           <property name="maximum">
+            <number>100</number>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QLabel" name="Maximum_Humitylabel">
            <property name="text">
             <string>Maximum Ground Humity: (%)</string>
@@ -38,20 +52,6 @@
           </widget>
          </item>
         </layout>
-       </item>
-       <item>
-        <widget class="QLabel" name="Minimum_label">
-         <property name="text">
-          <string>Minimum Ground Humity (%):</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSpinBox" name="Minimum_humity_spinBox">
-         <property name="maximum">
-          <number>100</number>
-         </property>
-        </widget>
        </item>
       </layout>
      </item>
